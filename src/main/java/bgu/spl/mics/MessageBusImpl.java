@@ -22,23 +22,23 @@ public class MessageBusImpl implements MessageBus {
 
 	private MessageBusImpl(){
 		messagesQs = new HashMap<MicroService, Vector<Message>>();
-		subscriptions=new HashMap<Class<? extends Message>,Vector<MicroService>>();
+		subscriptions=new HashMap<Class<? extends Event>,Vector<MicroService>>();
 		expectations=new HashMap<Message,Future>();
 	}
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		
+		subscriptions.get(type).add(m);
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		
+		subscriptions.get(type).add(m);
     }
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		
+		expectations.get(e).resolve(result);
 	}
 
 	@Override
@@ -49,14 +49,13 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
-	private MicroService roundRobin(Class<? extends Event> type){
-		return null;
-	}
-
+	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		MicroService m=roundRobin(e.getClass());
-		messagesQs.get(m).add(e);
+		Vector<MicroService> q=subscriptions.get(e.getClass());
+		for (MicroService m:q) {
+			messagesQs.get(m).add(e);
+		}
 		Future<T> f=new Future<>();
 		expectations.put(e,f);
         return f;
@@ -65,11 +64,12 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		messagesQs.put(m, new Vector<Message>());
+
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		messagesQs.remove(m);
+		
 	}
 
 	@Override
