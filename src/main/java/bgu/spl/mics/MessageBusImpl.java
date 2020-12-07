@@ -50,15 +50,29 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private MicroService roundRobin(Class<? extends Event> type){
-		return null;
+		MicroService microService = subscriptions.get(type).get(0);
+		subscriptions.get(type).remove(0);
+		while (!isRegistered(microService)){
+			microService = subscriptions.get(type).get(0);
+			subscriptions.get(type).remove(0);
+		}
+		subscriptions.get(type).add(microService);
+		return microService;
+	}
+
+	private boolean isRegistered(MicroService microService){
+		return messagesQs.containsKey(microService);
 	}
 
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		MicroService m=roundRobin(e.getClass());
+		MicroService m = roundRobin(e.getClass());
 		messagesQs.get(m).add(e);
-		Future<T> f=new Future<>();
-		expectations.put(e,f);
+		Future<T> f = new Future<>();
+		if(isRegistered(m)){
+			messagesQs.get(m).add(e);
+			expectations.put(e,f);
+		}
         return f;
 	}
 
