@@ -17,12 +17,12 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private HashMap<MicroService, Vector<Message>> messagesQs;
-	private HashMap<Message,Vector<MicroService>> subscriptions;
+	private HashMap<Class<? extends Message>,Vector<MicroService>> subscriptions;
 	private HashMap<Message,Future> expectations;
 
 	private MessageBusImpl(){
 		messagesQs = new HashMap<MicroService, Vector<Message>>();
-		subscriptions=new HashMap<Message,Vector<MicroService>>();
+		subscriptions=new HashMap<Class<? extends Message>,Vector<MicroService>>();
 		expectations=new HashMap<Message,Future>();
 	}
 
@@ -49,13 +49,14 @@ public class MessageBusImpl implements MessageBus {
 		}
 	}
 
-	
+	private MicroService roundRobin(Class<? extends Event> type){
+		return null;
+	}
+
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		Vector<MicroService> q=subscriptions.get(e.getClass());
-		for (MicroService m:q) {
-			messagesQs.get(m).add(e);
-		}
+		MicroService m=roundRobin(e.getClass());
+		messagesQs.get(m).add(e);
 		Future<T> f=new Future<>();
 		expectations.put(e,f);
         return f;
@@ -64,12 +65,11 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		messagesQs.put(m, new Vector<Message>());
-
 	}
 
 	@Override
 	public void unregister(MicroService m) {
-		
+		messagesQs.remove(m);
 	}
 
 	@Override
