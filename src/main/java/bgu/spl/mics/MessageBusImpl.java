@@ -70,6 +70,10 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void unregister(MicroService m) {
 		messagesQs.remove(m);
+//		for (:
+//			 ) {
+//
+//		}
 	}
 
 	@Override
