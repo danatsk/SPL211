@@ -24,8 +24,8 @@ public abstract class MicroService implements Runnable {
 
     protected String name;
     protected MessageBus mb;
-    protected HashMap <Message,Callback<?>> reactions;
-
+    protected HashMap <Class<? extends Message>,Callback<?>> reactions;
+    Boolean terminate;
 
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
@@ -34,6 +34,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
     	this.name=name;
     	mb=MessageBusImpl.getInstance();
+    	terminate=false;
     }
 
     /**
@@ -58,7 +59,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
-    	
+    	mb.subscribeEvent(type,this);
+    	reactions.put(type,callback);
     }
 
     /**
@@ -82,7 +84,8 @@ public abstract class MicroService implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
-    	
+    	mb.subscribeBroadcast(type,this);
+    	reactions.put(type,callback);
     }
 
     /**
@@ -98,8 +101,7 @@ public abstract class MicroService implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-    	
-        return null; 
+        return mb.sendEvent(e);
     }
 
     /**
@@ -109,7 +111,7 @@ public abstract class MicroService implements Runnable {
      * @param b The broadcast message to send
      */
     protected final void sendBroadcast(Broadcast b) {
-    	
+    	mb.sendBroadcast(b);
     }
 
     /**
@@ -123,7 +125,7 @@ public abstract class MicroService implements Runnable {
      *               {@code e}.
      */
     protected final <T> void complete(Event<T> e, T result) {
-    	
+    	mb.complete(e,result);
     }
 
     /**
@@ -136,7 +138,7 @@ public abstract class MicroService implements Runnable {
      * message.
      */
     protected final void terminate() {
-    	
+    	terminate=true;
     }
 
     /**
@@ -153,7 +155,8 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
+        while(!terminate){
 
+        }
     }
-
 }

@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Queue;
 import java.util.Vector;
 /**
@@ -85,11 +86,17 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void unregister(MicroService m) {
 		messagesQs.remove(m);
+		for (Map.Entry<Class<? extends Message>,Vector<MicroService>>pair:subscriptions.entrySet()){
+			for (int i = 0; i < pair.getValue().size(); i++) {
+				pair.getValue().remove(m);
+			}
+		}
 	}
 
 	@Override
 	public Message awaitMessage(MicroService m) throws InterruptedException {
-		
-		return null;
+		while(messagesQs.get(m).isEmpty())
+			wait();
+		return messagesQs.get(m).remove(0);
 	}
 }
