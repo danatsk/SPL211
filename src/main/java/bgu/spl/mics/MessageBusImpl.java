@@ -17,6 +17,8 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private HashMap<MicroService, Queue<Message>> messagesQs;
+	private HashMap<Message,MicroService> subscriptions;
+	private HashMap<Future<?>,Event<?>> expectations;
 
 	private MessageBusImpl(){
 
