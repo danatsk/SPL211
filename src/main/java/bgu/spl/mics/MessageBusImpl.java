@@ -22,7 +22,7 @@ public class MessageBusImpl implements MessageBus {
 
 	private MessageBusImpl(){
 		messagesQs = new HashMap<MicroService, Vector<Message>>();
-		subscriptions=new HashMap<Class<? extends Event>,Vector<MicroService>>();
+		subscriptions=new HashMap<Class<? extends Message>,Vector<MicroService>>();
 		expectations=new HashMap<Message,Future>();
 	}
 
