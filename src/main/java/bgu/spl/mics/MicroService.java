@@ -26,6 +26,7 @@ public abstract class MicroService implements Runnable {
     protected MessageBus mb;
     protected HashMap <Message,Callback<?>> reactions;
 
+
     /**
      * @param name the micro-service name (used mainly for debugging purposes -
      *             does not have to be unique)

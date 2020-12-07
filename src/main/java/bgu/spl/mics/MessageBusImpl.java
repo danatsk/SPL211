@@ -28,17 +28,17 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		
+		subscriptions.get(type).add(m);
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		
+		subscriptions.get(type).add(m);
     }
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		
+		expectations.get(e).resolve(result);
 	}
 
 	@Override
@@ -65,15 +65,12 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		messagesQs.put(m, new Vector<Message>());
+
 	}
 
 	@Override
 	public void unregister(MicroService m) {
 		messagesQs.remove(m);
-//		for (:
-//			 ) {
-//
-//		}
 	}
 
 	@Override
