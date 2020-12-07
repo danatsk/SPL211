@@ -2,7 +2,7 @@ package bgu.spl.mics;
 
 import java.util.HashMap;
 import java.util.Queue;
-
+import java.util.Vector;
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
  * Write your implementation here!
@@ -16,12 +16,14 @@ public class MessageBusImpl implements MessageBus {
 		return MessageBussHolder.instance;
 	}
 
-	private HashMap<MicroService, Queue<Message>> messagesQs;
-	private HashMap<Message,MicroService> subscriptions;
-	private HashMap<Future<?>,Event<?>> expectations;
+	private HashMap<MicroService, Vector<Message>> messagesQs;
+	private HashMap<Message,Vector<MicroService>> subscriptions;
+	private HashMap<Message,Future> expectations;
 
 	private MessageBusImpl(){
-
+		messagesQs = new HashMap<MicroService, Vector<Message>>();
+		subscriptions=new HashMap<Message,Vector<MicroService>>();
+		expectations=new HashMap<Message,Future>();
 	}
 
 	@Override
@@ -41,19 +43,28 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		
+		Vector<MicroService> q=subscriptions.get(b.getClass());
+		for (MicroService m:q) {
+			messagesQs.get(m).add(b);
+		}
 	}
 
 	
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
-		
-        return null;
+		Vector<MicroService> q=subscriptions.get(e.getClass());
+		for (MicroService m:q) {
+			messagesQs.get(m).add(e);
+		}
+		Future<T> f=new Future<>();
+		expectations.put(e,f);
+        return f;
 	}
 
 	@Override
 	public void register(MicroService m) {
-		
+		messagesQs.put(m, new Vector<Message>());
+
 	}
 
 	@Override
