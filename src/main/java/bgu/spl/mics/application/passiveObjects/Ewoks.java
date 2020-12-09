@@ -25,7 +25,7 @@ public class Ewoks {
         return EwoksHolder.instance;
     }
     private Ewoks(int numOfEwoks){
-        for (int i = 0; i < numOfEwoks; i++) {
+        for (int i = 1; i <= numOfEwoks; i++) {
             ewoks.add(new Ewok(i));
         }
     }
