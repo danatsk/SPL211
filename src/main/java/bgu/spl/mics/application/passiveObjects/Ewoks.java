@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -28,6 +29,25 @@ public class Ewoks {
     private Ewoks(int numOfEwoks){
         for (int i = 1; i <= numOfEwoks; i++) {
             ewoks.add(new Ewok(i));
+        }
+    }
+
+    public synchronized void get(List<Integer> serialNumbers){
+       for(int id = 1; id <= serialNumbers.size(); id++) {
+            while (!ewoks.elementAt(id).available) {
+                try {
+                    this.wait();
+                } catch (InterruptedException ignored) {
+                }
+                ewoks.elementAt(id).acquire();
+            }
+        }
+    }
+
+    public synchronized void put(List<Integer> serialNumbers){
+        for (int id = 1; id <= serialNumbers.size(); id++) {
+            ewoks.elementAt(id).release();
+            notifyAll();
         }
     }
 }
