@@ -5,6 +5,7 @@ import java.util.List;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
 
 /**
@@ -21,6 +22,7 @@ public class LeiaMicroservice extends MicroService {
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 		this.attacks = attacks;
+		initialize();
     }
 
     @Override
@@ -31,5 +33,6 @@ public class LeiaMicroservice extends MicroService {
         for (Attack a:attacks) {
             sendEvent(new AttackEvent(a.getSerials(),a.getDuration()));
         }
+        subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }

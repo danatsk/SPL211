@@ -1,5 +1,7 @@
 package bgu.spl.mics;
 
+import bgu.spl.mics.application.messages.AttackEvent;
+
 import java.util.HashMap;
 
 /**
@@ -24,7 +26,7 @@ public abstract class MicroService implements Runnable {
 
     protected String name;
     protected MessageBus mb;
-    protected HashMap <Class<? extends Message>,Callback<?>> reactions;
+    protected HashMap <Class<? extends Message>,Callback> reactions;
     Boolean terminate;
 
     /**
@@ -139,6 +141,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final void terminate() {
     	terminate=true;
+    	Thread.currentThread().interrupt();
     }
 
     /**
@@ -155,8 +158,20 @@ public abstract class MicroService implements Runnable {
      */
     @Override
     public final void run() {
-        while(!terminate){
-
+        while(!Thread.currentThread().isInterrupted()){
+            try {
+                Message m=mb.awaitMessage(this);
+                reactions.get(m.getClass()).call(m);
+            } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }
+//        while (!Thread.currentThread().isInterrupted()) {
+//            try {
+//                workerHelper.doSomeWork();
+//            } catch (InterruptedException e)
+//            {
+//                // raise the interrupt. This is very important!
+//                Thread.currentThread().interrupt();
+//            }
+
     }
 }

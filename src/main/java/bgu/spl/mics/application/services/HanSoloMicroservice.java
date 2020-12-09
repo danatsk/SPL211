@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 import java.util.concurrent.TimeUnit;
@@ -19,6 +20,7 @@ public class HanSoloMicroservice extends MicroService {
 
     public HanSoloMicroservice() {
         super("Han");
+        initialize();
     }
 
 
@@ -32,5 +34,6 @@ public class HanSoloMicroservice extends MicroService {
             } catch (InterruptedException e) {};
             ewoks.realse(attack.getSerials());
         });
+        subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }

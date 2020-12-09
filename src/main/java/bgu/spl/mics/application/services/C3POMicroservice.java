@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
@@ -21,6 +22,7 @@ public class C3POMicroservice extends MicroService {
 
     public C3POMicroservice() {
         super("C3PO");
+        initialize();
     }
 
     @Override
@@ -33,5 +35,6 @@ public class C3POMicroservice extends MicroService {
                 } catch (InterruptedException e) {};
                 ewoks.realse(attack.getSerials());
             });
+        subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }

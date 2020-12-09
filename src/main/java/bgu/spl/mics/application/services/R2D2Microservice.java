@@ -1,7 +1,9 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
+import bgu.spl.mics.application.messages.TerminationBroadcast;
 
 import java.util.concurrent.TimeUnit;
 
@@ -18,6 +20,7 @@ public class R2D2Microservice extends MicroService {
     public R2D2Microservice(long duration) {
         super("R2D2");
         this.duration= TimeUnit.MILLISECONDS.toMillis(duration);
+        initialize();
     }
 
     @Override
@@ -25,5 +28,9 @@ public class R2D2Microservice extends MicroService {
         subscribeEvent(DeactivationEvent.class,(duration)->{try {
             Thread.sleep(this.duration);
         } catch (InterruptedException e) {}
-        });    }
+        sendEvent(new BombDestroyerEvent<>());
+        sendBroadcast(new TerminationBroadcast());
+        });
+        subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
+    }
 }

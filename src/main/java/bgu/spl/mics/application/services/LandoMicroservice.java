@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.DeactivationEvent;
+import bgu.spl.mics.application.messages.TerminationBroadcast;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,6 +16,7 @@ public class LandoMicroservice  extends MicroService {
     public LandoMicroservice(long duration) {
         super("Lando");
         this.duration= TimeUnit.MILLISECONDS.toMillis(duration);
+        initialize();
     }
 
     @Override
@@ -23,6 +25,6 @@ public class LandoMicroservice  extends MicroService {
                Thread.sleep(this.duration);
            } catch (InterruptedException e) {}
         });
-
+        subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }
