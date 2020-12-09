@@ -1,6 +1,7 @@
 package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.AttackEvent;
 
 
 /**
@@ -19,6 +20,6 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-
+//        reactions.put(AttackEvent.class,) --- add the callback that matches
     }
 }
