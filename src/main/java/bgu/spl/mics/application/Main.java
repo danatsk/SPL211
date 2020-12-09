@@ -3,6 +3,7 @@ package bgu.spl.mics.application;
 import bgu.spl.mics.JsonParse;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.passiveObjects.Attack;
+import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.services.LeiaMicroservice;
 import com.google.gson.Gson;
 
@@ -20,5 +21,7 @@ public class Main {
 		Reader reader = new FileReader(args[0]);
 		JsonParse input =gson.fromJson(reader, JsonParse.class);
 		MicroService Leia = new LeiaMicroservice(input.getAttacks());
+		Diary diary = Diary.getInstance();
+		diary.writeOutput("Information");
 	}
 }
