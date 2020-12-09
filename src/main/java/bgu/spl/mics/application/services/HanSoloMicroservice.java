@@ -3,6 +3,9 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
+
+import java.util.concurrent.TimeUnit;
 
 /**
  * HanSoloMicroservices is in charge of the handling {@link AttackEvent}.
@@ -21,6 +24,13 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-
+        Ewoks ewoks = Ewoks.getInstance();
+        subscribeEvent(AttackEvent.class, (attack) ->
+        {ewoks.acquire(attack.getSerials()); long duration = TimeUnit.MILLISECONDS.toMillis(attack.getDuration());
+            try {
+                Thread.sleep(duration);
+            } catch (InterruptedException e) {};
+            ewoks.realse(attack.getSerials());
+        });
     }
 }

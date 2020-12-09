@@ -2,6 +2,11 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Attack;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
+
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -13,13 +18,20 @@ import bgu.spl.mics.application.messages.AttackEvent;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class C3POMicroservice extends MicroService {
-	
+
     public C3POMicroservice() {
         super("C3PO");
     }
 
     @Override
     protected void initialize() {
-//        reactions.put(AttackEvent.class,) --- add the callback that matches
+        Ewoks ewoks = Ewoks.getInstance();
+        subscribeEvent(AttackEvent.class, (attack) ->
+            {ewoks.acquire(attack.getSerials()); long duration = TimeUnit.MILLISECONDS.toMillis(attack.getDuration());
+                try {
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {};
+                ewoks.realse(attack.getSerials());
+            });
     }
 }

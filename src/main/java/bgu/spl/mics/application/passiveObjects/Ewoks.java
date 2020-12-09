@@ -32,7 +32,7 @@ public class Ewoks {
         }
     }
 
-    public synchronized void get(List<Integer> serialNumbers){
+    public synchronized void acquire(List<Integer> serialNumbers){
        for(int id = 1; id <= serialNumbers.size(); id++) {
             while (!ewoks.elementAt(id).available) {
                 try {
@@ -44,7 +44,7 @@ public class Ewoks {
         }
     }
 
-    public synchronized void put(List<Integer> serialNumbers){
+    public synchronized void realse(List<Integer> serialNumbers){
         for (int id = 1; id <= serialNumbers.size(); id++) {
             ewoks.elementAt(id).release();
             notifyAll();
