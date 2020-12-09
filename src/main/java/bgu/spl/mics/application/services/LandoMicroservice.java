@@ -19,10 +19,10 @@ public class LandoMicroservice  extends MicroService {
 
     @Override
     protected void initialize() {
-       subscribeEvent(DeactivationEvent.class,(long duration)->(try {
-               Thread.sleep(duration);
+       subscribeEvent(DeactivationEvent.class,(duration)->{try {
+               Thread.sleep(this.duration);
            } catch (InterruptedException e) {}
-        ));
+        });
 
     }
 }
