@@ -18,6 +18,7 @@ public class Ewoks {
         private static Ewoks instance;
     }
 
+
     public static void initialize(int numOfEwoks){
         EwoksHolder.instance=new Ewoks(numOfEwoks);
     }
