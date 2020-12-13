@@ -19,16 +19,17 @@ import bgu.spl.mics.application.passiveObjects.*;
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
 
-    public LeiaMicroservice(Attack[] attacks) {
+    public LeiaMicroservice(Attack[] attacks, int ewoks) {
         super("Leia");
-		this.attacks = attacks;
+        Ewoks.initialize(ewoks);
+        this.attacks = attacks;
 		initialize();
     }
 
     @Override
     protected void initialize() {
         try {
-            Thread.sleep(3000);
+            Thread.sleep(300);
         } catch (InterruptedException e) { }
         for (Attack a:attacks) {
             sendEvent(new AttackEvent(a.getSerials(),a.getDuration()));

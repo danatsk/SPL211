@@ -15,23 +15,26 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
-    private String jsonString;
+    private String jsonString="";
     private AtomicInteger totalAttacks;
-    private long HanSoloFinish;
-    private long C3POFinish;
-    private long R2D2Deactivate;
-    private long LeiaTerminate;
-    private long HanSoloTerminate;
-    private long C3POTerminate;
-    private long R2D2Terminate;
-    private long LandoTerminate;
+    private long HanSoloFinish=0;
+    private long C3POFinish=0;
+    private long R2D2Deactivate=0;
+    private long LeiaTerminate=0;
+    private long HanSoloTerminate=0;
+    private long C3POTerminate=0;
+    private long R2D2Terminate=0;
+    private long LandoTerminate=0;
 
     private static class DiaryHolder {
-        private static Diary instance = Diary.getInstance();
+        private static Diary instance = new Diary();
     }
-
+    private Diary(){
+        totalAttacks=new AtomicInteger(0);
+    }
+//
     public static Diary getInstance() {
-        return Diary.getInstance();
+        return DiaryHolder.instance;
     }
 
     public void updateTotalAttacks() {
