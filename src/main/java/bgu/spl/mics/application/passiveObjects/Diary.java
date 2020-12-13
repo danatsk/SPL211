@@ -2,10 +2,12 @@ package bgu.spl.mics.application.passiveObjects;
 
 
 import com.google.gson.*;
+import com.sun.tools.javac.util.List;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -17,7 +19,21 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Diary {
     private String jsonString="";
     private AtomicInteger totalAttacks;
-    private long HanSoloFinish=0;
+    private Vector<Task> data;
+
+    private static class DiaryHolder {
+        private static Diary instance = new Diary();
+    }
+    private Diary(){
+        totalAttacks=new AtomicInteger(0);
+        data=new Vector<Task>();
+    }
+
+    public static Diary getInstance() {
+        return DiaryHolder.instance;
+    }
+
+/*    private long HanSoloFinish=0;
     private long C3POFinish=0;
     private long R2D2Deactivate=0;
     private long LeiaTerminate=0;
@@ -26,16 +42,7 @@ public class Diary {
     private long R2D2Terminate=0;
     private long LandoTerminate=0;
 
-    private static class DiaryHolder {
-        private static Diary instance = new Diary();
-    }
-    private Diary(){
-        totalAttacks=new AtomicInteger(0);
-    }
-//
-    public static Diary getInstance() {
-        return DiaryHolder.instance;
-    }
+
 
     public void updateTotalAttacks() {
         while (!totalAttacks.compareAndSet(totalAttacks.intValue(), totalAttacks.intValue() + 1)) {
@@ -128,5 +135,5 @@ public class Diary {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 }
