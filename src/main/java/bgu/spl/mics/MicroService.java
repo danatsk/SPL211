@@ -148,8 +148,7 @@ public abstract class MicroService implements Runnable {
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
      */
-    public final String getName() {
-        return name;
+    public final String getName() { return name;
     }
 
     /**
@@ -164,14 +163,5 @@ public abstract class MicroService implements Runnable {
                 reactions.get(m.getClass()).call(m);
             } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }
-//        while (!Thread.currentThread().isInterrupted()) {
-//            try {
-//                workerHelper.doSomeWork();
-//            } catch (InterruptedException e)
-//            {
-//                // raise the interrupt. This is very important!
-//                Thread.currentThread().interrupt();
-//            }
-
     }
 }
