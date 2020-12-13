@@ -1,8 +1,12 @@
 package bgu.spl.mics;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Task;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -24,8 +28,13 @@ import java.util.HashMap;
  */
 public abstract class MicroService implements Runnable { 
 
+    Date init;
+    Date term;
+    long initialized;
+    long terminated;
     protected String name;
     protected MessageBus mb;
+    protected Diary diary;
     protected HashMap <Class<? extends Message>,Callback> reactions;
     Boolean terminate;
 
@@ -36,6 +45,7 @@ public abstract class MicroService implements Runnable {
     public MicroService(String name) {
     	this.name=name;
     	mb=MessageBusImpl.getInstance();
+    	diary = Diary.getInstance();
     	terminate=false;
     }
 
@@ -141,6 +151,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final void terminate() {
     	terminate=true;
+        Task terminated = new Task(name,"Terminated", System.currentTimeMillis());
+        diary.addTask(terminated);
     	Thread.currentThread().interrupt();
     }
 
@@ -164,4 +176,5 @@ public abstract class MicroService implements Runnable {
             } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }
     }
+
 }

@@ -4,6 +4,8 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.BombDestroyerEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Task;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,8 +27,12 @@ public class R2D2Microservice extends MicroService {
 
     @Override
     protected void initialize() {
+        Task init = new Task(name, "init", System.currentTimeMillis());
+        diary.addTask(init);
         subscribeEvent(DeactivationEvent.class,(duration)->{try {
             Thread.sleep(this.duration);
+            Task deactivatedShield = new Task(name, "Deactivated", System.currentTimeMillis());
+            diary.addTask(deactivatedShield);
         } catch (InterruptedException e) {}
         sendEvent(new BombDestroyerEvent<>());
         sendBroadcast(new TerminationBroadcast());

@@ -3,10 +3,8 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
-import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
-
-import java.util.List;
+import bgu.spl.mics.application.passiveObjects.Task;
 import java.util.concurrent.TimeUnit;
 
 
@@ -27,12 +25,19 @@ public class C3POMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+        Task init = new Task(name, "init", System.currentTimeMillis());
+        diary.addTask(init);
         Ewoks ewoks = Ewoks.getInstance();
         subscribeEvent(AttackEvent.class, (attack) ->
             {ewoks.acquire(attack.getSerials()); long duration = TimeUnit.MILLISECONDS.toMillis(attack.getDuration());
                 try {
+                    Task startedAttack = new Task(name, "Started", System.currentTimeMillis());
+                    diary.addTask(startedAttack);
                     Thread.sleep(duration);
                 } catch (InterruptedException e) {};
+                diary.updateTotalAttacks();
+                Task finishedAttack = new Task(name, "Finished", System.currentTimeMillis());
+                diary.addTask(finishedAttack);
                 ewoks.realse(attack.getSerials());
             });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});

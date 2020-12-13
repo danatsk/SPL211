@@ -5,7 +5,9 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
+import bgu.spl.mics.application.passiveObjects.Task;
 
+import javax.xml.crypto.Data;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -26,12 +28,19 @@ public class HanSoloMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+        Task init = new Task(name, "init", System.currentTimeMillis());
+        diary.addTask(init);
         Ewoks ewoks = Ewoks.getInstance();
         subscribeEvent(AttackEvent.class, (attack) ->
         {ewoks.acquire(attack.getSerials()); long duration = TimeUnit.MILLISECONDS.toMillis(attack.getDuration());
             try {
+                Task startedAttack = new Task(name, "Started", System.currentTimeMillis());
+                diary.addTask(startedAttack);
                 Thread.sleep(duration);
             } catch (InterruptedException e) {};
+            diary.updateTotalAttacks();
+            Task finishedAttack = new Task(name, "Started", System.currentTimeMillis());
+            diary.addTask(finishedAttack);
             ewoks.realse(attack.getSerials());
         });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});

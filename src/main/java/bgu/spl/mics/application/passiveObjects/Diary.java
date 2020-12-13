@@ -1,10 +1,5 @@
 package bgu.spl.mics.application.passiveObjects;
-
-
 import com.google.gson.*;
-import com.sun.tools.javac.util.List;
-
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Vector;
@@ -33,107 +28,120 @@ public class Diary {
         return DiaryHolder.instance;
     }
 
-/*    private long HanSoloFinish=0;
-    private long C3POFinish=0;
-    private long R2D2Deactivate=0;
-    private long LeiaTerminate=0;
-    private long HanSoloTerminate=0;
-    private long C3POTerminate=0;
-    private long R2D2Terminate=0;
-    private long LandoTerminate=0;
-
-
-
     public void updateTotalAttacks() {
-        while (!totalAttacks.compareAndSet(totalAttacks.intValue(), totalAttacks.intValue() + 1)) {
+        while (!totalAttacks.compareAndSet(totalAttacks.intValue(), totalAttacks.intValue() + 1)) {};
+    }
+
+    public void addTask(Task task){
+        data.add(task);
+    }
+
+    public int getTotalAttacks() {
+        return totalAttacks.intValue();
+    }
+
+    public long getC3POFinish() {
+        long finished = 0;
+        long started = 0;
+        for (Task task: data){
+            if(task.getTaskDescription().equals("Finished")&task.getExecuterName().equals("C3PO")){
+                finished = Math.max(finished,task.getTimestamp());
+            }
         }
-        ;
+        for (Task task: data){
+            if(task.getTaskDescription().equals("Started")&task.getExecuterName().equals("C3PO")){
+                started = task.getTimestamp();
+            }
+        }
+        return (finished-started);
     }
 
-    public void HanSoloFinished(long time) {
-        HanSoloFinish = time;
+    public long getHanSoloFinish() {
+        long finished = 0;
+        long started = 0;
+        for (Task task: data){
+            if(task.getTaskDescription().equals("Finished")&task.getExecuterName().equals("Han")){
+                finished = Math.max(finished,task.getTimestamp());
+            }
+        }
+        for (Task task: data){
+            if(task.getTaskDescription().equals("Started")&task.getExecuterName().equals("Han")){
+                started = task.getTimestamp();
+            }
+        }
+        return (finished-started);
     }
 
-    public void C3POFinished(long time) {
-        C3POFinish = time;
+    public long getR2D2Deactivate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("R2D2")&task.getTaskDescription().equals("Deactivated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
 
-    public void R2D2Deactivated(long time) {
-        R2D2Deactivate = time;
+    public long getLeiaTerminate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("Leia")&task.getTaskDescription().equals("Terminated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
 
-    public void LeiaTerminated(long time) {
-        LeiaTerminate = time;
+    public long getHanSoloTerminate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("Han")&task.getTaskDescription().equals("Terminated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
 
-    public void HanSoloTerminated(long time) {
-        HanSoloTerminate = time;
+    public long getC3POTerminate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("C3PO")&task.getTaskDescription().equals("Terminated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
 
-    public void C3POTerminated(long time) {
-        C3POTerminate = time;
+    public long getR2D2Terminate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("R2D2")&task.getTaskDescription().equals("Terminated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
 
-    public void LandoTerminated(long time) {
-        LandoTerminate = time;
+    public long getLandoTerminate() {
+        for (Task task: data){
+            if (task.getExecuterName().equals("Lando")&task.getTaskDescription().equals("Terminated")){
+                return task.getTimestamp();
+            }
+        }
+        return 0;
     }
-
-    public void R2D2Terminated(long time) {
-        R2D2Terminate = time;
-    }
-
-//    public int getTotalAttacks() {
-//        return totalAttacks.intValue();
-//    }
-//
-//    public long getC3POFinish() {
-//        return C3POFinish;
-//    }
-//
-//    public long getHanSoloFinish() {
-//        return HanSoloFinish;
-//    }
-//
-//    public long getR2D2Deactivate() {
-//        return R2D2Deactivate;
-//    }
-//
-//    public long getLeiaTerminate() {
-//        return LeiaTerminate;
-//    }
-//
-//    public long getHanSoloTerminate() {
-//        return HanSoloTerminate;
-//    }
-//
-//    public long getC3POTerminate() {
-//        return C3POTerminate;
-//    }
-//
-//    public long getR2D2Terminate() {
-//        return R2D2Terminate;
-//    }
-//
-//    public long getLandoTerminate() {
-//        return LandoTerminate;
-//    }
 
     public void writeOutput(String filename) {
         JsonArray jsonDiaryArray = new JsonArray();
-        jsonDiaryArray.add("Total attacks: " + totalAttacks.intValue());
-        jsonDiaryArray.add("Han-Solo finished his attacks after: " + HanSoloFinish + " milliseconds");
-        jsonDiaryArray.add("C3PO finished his attacks after: " + C3POFinish + " milliseconds");
-        jsonDiaryArray.add("R2D2 deactivated the shield generator after: " + R2D2Deactivate + " milliseconds");
-        jsonDiaryArray.add("Leia was terminated after " + LeiaTerminate + "milliseconds");
-        jsonDiaryArray.add("Han-Solo was terminated after " + HanSoloTerminate + " milliseconds");
-        jsonDiaryArray.add("C3PO was terminated after " + C3POTerminate + " milliseconds");
-        jsonDiaryArray.add("R2D2 was terminated after " + R2D2Terminate + "milliseconds");
-        jsonDiaryArray.add("Lando was terminated after " + " milliseconds");
+        jsonDiaryArray.add("Total attacks: " + getTotalAttacks());
+        jsonDiaryArray.add("Han-Solo finished his attacks after: " + getHanSoloFinish() + " milliseconds");
+        jsonDiaryArray.add("C3PO finished his attacks after: " + getC3POFinish() + " milliseconds");
+        jsonDiaryArray.add("R2D2 deactivated the shield generator after: " + getR2D2Deactivate() + " milliseconds");
+        jsonDiaryArray.add("Leia was terminated after " + getLeiaTerminate() + "milliseconds");
+        jsonDiaryArray.add("Han-Solo was terminated after " + getHanSoloTerminate() + " milliseconds");
+        jsonDiaryArray.add("C3PO was terminated after " + getC3POTerminate() + " milliseconds");
+        jsonDiaryArray.add("R2D2 was terminated after " + getR2D2Terminate() + "milliseconds");
+        jsonDiaryArray.add("Lando was terminated after " + getLandoTerminate() + " milliseconds");
         try {
             FileWriter fileWriter = new FileWriter("../output.txt");
             fileWriter.write(jsonDiaryArray.toString());
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }*/
+    }
 }

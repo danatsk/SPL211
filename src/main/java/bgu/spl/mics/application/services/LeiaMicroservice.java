@@ -28,6 +28,8 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
+        Task init = new Task(name, "init", System.currentTimeMillis());
+        diary.addTask(init);
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) { }

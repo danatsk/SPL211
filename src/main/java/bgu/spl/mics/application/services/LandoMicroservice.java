@@ -3,6 +3,8 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
+import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Task;
 
 import java.util.concurrent.TimeUnit;
 
@@ -21,6 +23,9 @@ public class LandoMicroservice  extends MicroService {
 
     @Override
     protected void initialize() {
+        Task init = new Task(name, "init", System.currentTimeMillis());
+        diary.addTask(init);
+        Diary diary = Diary.getInstance();
        subscribeEvent(DeactivationEvent.class,(duration)->{try {
                Thread.sleep(this.duration);
            } catch (InterruptedException e) {}
