@@ -29,11 +29,15 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+		if(subscriptions.get(type)==null)
+			subscriptions.put(type,new Vector<MicroService>());
 		subscriptions.get(type).add(m);
 	}
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
+		if(subscriptions.get(type)==null)
+			subscriptions.put(type,new Vector<MicroService>());
 		subscriptions.get(type).add(m);
     }
 
@@ -51,12 +55,13 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private MicroService roundRobin(Class<? extends Event> type){
+
 		MicroService microService = subscriptions.get(type).get(0);
 		subscriptions.get(type).remove(0);
-		while (!isRegistered(microService)){
-			microService = subscriptions.get(type).get(0);
-			subscriptions.get(type).remove(0);
-		}
+//		while (!isRegistered(microService)){
+//			microService = subscriptions.get(type).get(0);
+//			subscriptions.get(type).remove(0);
+//		}
 		subscriptions.get(type).add(microService);
 		return microService;
 	}
@@ -68,6 +73,8 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public <T> Future<T> sendEvent(Event<T> e) {
 		MicroService m = roundRobin(e.getClass());
+		if(messagesQs.get(m)==null)
+			messagesQs.put(m,new Vector<Message>());
 		messagesQs.get(m).add(e);
 		Future<T> f = new Future<>();
 		if(isRegistered(m)){
@@ -80,7 +87,6 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		messagesQs.put(m, new Vector<Message>());
-
 	}
 
 	@Override

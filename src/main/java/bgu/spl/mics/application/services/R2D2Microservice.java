@@ -28,6 +28,7 @@ public class R2D2Microservice extends MicroService {
     @Override
     protected void initialize() {
         Task init = new Task(name, "init", System.currentTimeMillis());
+        mb.register(this);
         diary.addTask(init);
         subscribeEvent(DeactivationEvent.class,(duration)->{try {
             Thread.sleep(this.duration);

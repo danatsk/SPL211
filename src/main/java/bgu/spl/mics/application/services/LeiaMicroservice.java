@@ -23,12 +23,13 @@ public class LeiaMicroservice extends MicroService {
         super("Leia");
         Ewoks.initialize(ewoks);
         this.attacks = attacks;
-		initialize();
+//		initialize();
     }
 
     @Override
     protected void initialize() {
         Task init = new Task(name, "init", System.currentTimeMillis());
+        mb.register(this);
         diary.addTask(init);
         try {
             Thread.sleep(300);

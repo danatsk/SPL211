@@ -24,6 +24,7 @@ public class LandoMicroservice  extends MicroService {
     @Override
     protected void initialize() {
         Task init = new Task(name, "init", System.currentTimeMillis());
+        mb.register(this);
         diary.addTask(init);
         Diary diary = Diary.getInstance();
        subscribeEvent(DeactivationEvent.class,(duration)->{try {

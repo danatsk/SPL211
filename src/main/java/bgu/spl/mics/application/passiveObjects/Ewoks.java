@@ -27,6 +27,7 @@ public class Ewoks {
         return EwoksHolder.instance;
     }
     private Ewoks(int numOfEwoks){
+        ewoks=new Vector<Ewok>();
         for (int i = 1; i <= numOfEwoks; i++) {
             ewoks.add(new Ewok(i));
         }

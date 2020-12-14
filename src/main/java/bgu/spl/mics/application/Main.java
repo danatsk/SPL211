@@ -30,11 +30,13 @@ public class Main {
 		Thread HanSoloThread=new Thread(new HanSoloMicroservice());
 		Thread C3POThread=new Thread(new C3POMicroservice());
 
-		leiaThread.start();
+
+
 		LandoThread.start();
-		R2D2Thread.start();;
+		HanSoloThread.start();;
 		R2D2Thread.start();
 		C3POThread.start();
+		leiaThread.start();
 
 		diary.writeOutput("Information");
 	}

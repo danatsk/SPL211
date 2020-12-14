@@ -6,6 +6,7 @@ import bgu.spl.mics.application.passiveObjects.Task;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -47,6 +48,7 @@ public abstract class MicroService implements Runnable {
     	mb=MessageBusImpl.getInstance();
     	diary = Diary.getInstance();
     	terminate=false;
+    	reactions=new HashMap<Class<? extends Message>,Callback>();
     }
 
     /**
@@ -72,6 +74,8 @@ public abstract class MicroService implements Runnable {
      */
     protected final <T, E extends Event<T>> void subscribeEvent(Class<E> type, Callback<E> callback) {
     	mb.subscribeEvent(type,this);
+//        if(subscriptions.get(type)==null)
+//            subscriptions.put(type,new Vector<MicroService>());
     	reactions.put(type,callback);
     }
 

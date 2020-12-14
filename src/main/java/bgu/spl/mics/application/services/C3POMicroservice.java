@@ -26,6 +26,7 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         Task init = new Task(name, "init", System.currentTimeMillis());
+        mb.register(this);
         diary.addTask(init);
         Ewoks ewoks = Ewoks.getInstance();
         subscribeEvent(AttackEvent.class, (attack) ->
