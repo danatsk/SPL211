@@ -36,7 +36,6 @@ public class C3POMicroservice extends MicroService {
                     Task startedAttack = new Task(name, "Started", System.currentTimeMillis());
                     diary.addTask(startedAttack);
                     Thread.sleep(duration);
-//                    System.out.println("attack was handle");
                 } catch (InterruptedException e) {};
                 diary.updateTotalAttacks();
                 Task finishedAttack = new Task(name, "Finished", System.currentTimeMillis());

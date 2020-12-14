@@ -153,12 +153,13 @@ public abstract class MicroService implements Runnable {
      * Signals the event loop that it must terminate after handling the current
      * message.
      */
-    protected final void terminate() {
+    protected synchronized final void terminate() {
     	terminate=true;
         System.out.println("This m- "+getName()+" terminated");
         Task terminated = new Task(name,"Terminated", System.currentTimeMillis());
         diary.addTask(terminated);
     	Thread.currentThread().interrupt();
+    	notifyAll();
     }
 
     /**
@@ -177,7 +178,6 @@ public abstract class MicroService implements Runnable {
         while(!Thread.currentThread().isInterrupted()){
             try {
                 Message m=mb.awaitMessage(this);
-//                System.out.println("");
                 reactions.get(m.getClass()).call(m);
             } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }

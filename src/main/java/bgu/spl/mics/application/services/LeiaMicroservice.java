@@ -45,7 +45,6 @@ public class LeiaMicroservice extends MicroService {
         subscribeEvent(AttackFinishedEvent.class,(bool)->
         {totalFinishedAttacks++;
         if(totalFinishedAttacks==attacks.length) {
-//            System.out.println("deacti is on");
             sendEvent(new DeactivationEvent<>());
         }
         });
