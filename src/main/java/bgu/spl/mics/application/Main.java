@@ -36,7 +36,19 @@ public class Main {
 		C3POThread.start();
 		leiaThread.start();
 
-		diary.writeOutput("Information");
+		try {
+			leiaThread.join();
+			LandoThread.join();
+			HanSoloThread.join();;
+			R2D2Thread.join();
+			C3POThread.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+
+//		diary.writeOutput(args[1]);
+		diary.writeOutput("/home/spl211/Desktop/SPL211/SPL211/Output.json");
 
 		System.out.println("finished");
 	}

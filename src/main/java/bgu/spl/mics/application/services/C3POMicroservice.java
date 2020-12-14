@@ -2,6 +2,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.AttackFinishedEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.passiveObjects.Task;
@@ -35,11 +36,13 @@ public class C3POMicroservice extends MicroService {
                     Task startedAttack = new Task(name, "Started", System.currentTimeMillis());
                     diary.addTask(startedAttack);
                     Thread.sleep(duration);
+//                    System.out.println("attack was handle");
                 } catch (InterruptedException e) {};
                 diary.updateTotalAttacks();
                 Task finishedAttack = new Task(name, "Finished", System.currentTimeMillis());
                 diary.addTask(finishedAttack);
                 ewoks.realse(attack.getSerials());
+                sendEvent(new AttackFinishedEvent());
             });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }

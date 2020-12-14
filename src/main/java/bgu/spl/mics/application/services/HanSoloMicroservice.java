@@ -3,6 +3,7 @@ package bgu.spl.mics.application.services;
 
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.AttackFinishedEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 import bgu.spl.mics.application.passiveObjects.Task;
@@ -43,6 +44,7 @@ public class HanSoloMicroservice extends MicroService {
             Task finishedAttack = new Task(name, "Started", System.currentTimeMillis());
             diary.addTask(finishedAttack);
             ewoks.realse(attack.getSerials());
+            sendEvent(new AttackFinishedEvent());
         });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }

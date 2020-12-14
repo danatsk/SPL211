@@ -155,6 +155,7 @@ public abstract class MicroService implements Runnable {
      */
     protected final void terminate() {
     	terminate=true;
+        System.out.println("This m- "+getName()+" terminated");
         Task terminated = new Task(name,"Terminated", System.currentTimeMillis());
         diary.addTask(terminated);
     	Thread.currentThread().interrupt();
@@ -164,8 +165,7 @@ public abstract class MicroService implements Runnable {
      * @return the name of the service - the service name is given to it in the
      *         construction time and is used mainly for debugging purposes.
      */
-    public final String getName() { return name;
-    }
+    public final String getName() { return name;}
 
     /**
      * The entry point of the micro-service. TODO: you must complete this code
@@ -177,9 +177,9 @@ public abstract class MicroService implements Runnable {
         while(!Thread.currentThread().isInterrupted()){
             try {
                 Message m=mb.awaitMessage(this);
+//                System.out.println("");
                 reactions.get(m.getClass()).call(m);
             } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }
     }
-
 }

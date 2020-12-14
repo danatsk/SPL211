@@ -50,8 +50,8 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void sendBroadcast(Broadcast b) {
-		Vector<MicroService> q=subscriptions.get(b.getClass());
-		for (MicroService m:q) {
+//		Vector<MicroService> q=subscriptions.get(b.getClass());
+		for (MicroService m:subscriptions.get(b.getClass())) {
 			messagesQs.get(m).add(b);
 		}
 	}
@@ -74,6 +74,7 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
+//		System.out.println(e.getClass());
 		MicroService m = roundRobin(e.getClass());
 //		if(messagesQs.get(m)==null)
 //			messagesQs.put(m,new Vector<Message>());
@@ -108,6 +109,7 @@ public class MessageBusImpl implements MessageBus {
 			wait();
 
 		Message output=messagesQs.get(m).firstElement();
+		System.out.println("This m- "+m.getName()+" "+output);
 		messagesQs.get(m).remove(output);
 //		return messagesQs.get(m).remove(0);
 		return output;

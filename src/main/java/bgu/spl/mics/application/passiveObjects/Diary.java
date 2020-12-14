@@ -4,6 +4,7 @@ import com.google.gson.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Vector;
@@ -130,7 +131,7 @@ public class Diary {
         return 0;
     }
 
-    public void writeOutput(String filename) {
+    public void writeOutput(String path) {
         JsonArray jsonDiaryArray = new JsonArray();
         jsonDiaryArray.add("Total attacks: " + getTotalAttacks());
         jsonDiaryArray.add("Han-Solo finished his attacks after: " + getHanSoloFinish() + " milliseconds");
@@ -148,13 +149,17 @@ public class Diary {
 //            fileWriter.write(jsonDiaryArray.toString());
 
 
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            JsonParser jp = new JsonParser();
-            JsonElement je = jp.parse(String.valueOf(jsonDiaryArray));
-            String prettyJsonString = gson.toJson(je);
+//            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//            JsonParser jp = new JsonParser();
+//            JsonElement je = jp.parse(String.valueOf(jsonDiaryArray));
+//            String prettyJsonString = gson.toJson(je);
+//
+//            Files.write(Paths.get(filename), prettyJsonString.getBytes());
 
-            Files.write(Paths.get(filename), prettyJsonString.getBytes());
-
+            Gson g = new Gson();
+            Writer writer = new FileWriter(path);
+            g.toJson(jsonDiaryArray,writer);
+            writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

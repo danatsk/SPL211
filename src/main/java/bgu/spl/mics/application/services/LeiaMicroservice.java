@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.ActivationEvent;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.TerminationBroadcast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.*;
 
 /**
@@ -20,11 +18,13 @@ import bgu.spl.mics.application.passiveObjects.*;
  */
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
+	private int totalFinishedAttacks;
 
     public LeiaMicroservice(Attack[] attacks, int ewoks) {
         super("Leia");
         Ewoks.initialize(ewoks);
         this.attacks = attacks;
+        totalFinishedAttacks=0;
 		initialize();
     }
     private void sendAttacks(){
@@ -42,6 +42,13 @@ public class LeiaMicroservice extends MicroService {
 //        } catch (InterruptedException e) { }
         subscribeEvent(ActivationEvent.class,(bool)->sendAttacks());
         sendEvent(new ActivationEvent());
+        subscribeEvent(AttackFinishedEvent.class,(bool)->
+        {totalFinishedAttacks++;
+        if(totalFinishedAttacks==attacks.length) {
+//            System.out.println("deacti is on");
+            sendEvent(new DeactivationEvent<>());
+        }
+        });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }
