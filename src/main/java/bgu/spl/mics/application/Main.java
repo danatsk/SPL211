@@ -30,8 +30,6 @@ public class Main {
 		Thread HanSoloThread=new Thread(new HanSoloMicroservice());
 		Thread C3POThread=new Thread(new C3POMicroservice());
 
-
-
 		LandoThread.start();
 		HanSoloThread.start();;
 		R2D2Thread.start();
@@ -39,5 +37,7 @@ public class Main {
 		leiaThread.start();
 
 		diary.writeOutput("Information");
+
+		System.out.println("finished");
 	}
 }

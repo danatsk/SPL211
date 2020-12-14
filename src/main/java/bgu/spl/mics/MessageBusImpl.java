@@ -75,14 +75,14 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		MicroService m = roundRobin(e.getClass());
-		if(messagesQs.get(m)==null)
-			messagesQs.put(m,new Vector<Message>());
+//		if(messagesQs.get(m)==null)
+//			messagesQs.put(m,new Vector<Message>());
 		messagesQs.get(m).add(e);
 		Future<T> f = new Future<>();
-		if(isRegistered(m)){
-			messagesQs.get(m).add(e);
+//		if(isRegistered(m)){
+//			messagesQs.get(m).add(e);
 			expectations.put(e,f);
-		}
+//		}
 		notifyAll();
         return f;
 	}
@@ -104,8 +104,9 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
-		if(messagesQs.get(m).isEmpty())
+		while(messagesQs.get(m).isEmpty())
 			wait();
+
 		Message output=messagesQs.get(m).firstElement();
 		messagesQs.get(m).remove(output);
 //		return messagesQs.get(m).remove(0);

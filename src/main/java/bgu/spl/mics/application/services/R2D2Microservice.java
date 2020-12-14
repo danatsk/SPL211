@@ -36,7 +36,6 @@ public class R2D2Microservice extends MicroService {
             diary.addTask(deactivatedShield);
         } catch (InterruptedException e) {}
         sendEvent(new BombDestroyerEvent<>());
-        sendBroadcast(new TerminationBroadcast());
         });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }

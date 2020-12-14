@@ -37,9 +37,9 @@ public class LeiaMicroservice extends MicroService {
         Task init = new Task(name, "init", System.currentTimeMillis());
         mb.register(this);
         diary.addTask(init);
-        try {
-            Thread.sleep(300);
-        } catch (InterruptedException e) { }
+//        try {
+//            Thread.sleep(300);
+//        } catch (InterruptedException e) { }
         subscribeEvent(ActivationEvent.class,(bool)->sendAttacks());
         sendEvent(new ActivationEvent());
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});

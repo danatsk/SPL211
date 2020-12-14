@@ -1,7 +1,11 @@
 package bgu.spl.mics.application.passiveObjects;
 import com.google.gson.*;
+
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Vector;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -138,8 +142,19 @@ public class Diary {
         jsonDiaryArray.add("R2D2 was terminated after " + getR2D2Terminate() + "milliseconds");
         jsonDiaryArray.add("Lando was terminated after " + getLandoTerminate() + " milliseconds");
         try {
-            FileWriter fileWriter = new FileWriter("../output.txt");
-            fileWriter.write(jsonDiaryArray.toString());
+//            File output=new File(filename+".json");
+//            output.createNewFile();
+//            FileWriter fileWriter = new FileWriter(output.getName());
+//            fileWriter.write(jsonDiaryArray.toString());
+
+
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            JsonParser jp = new JsonParser();
+            JsonElement je = jp.parse(String.valueOf(jsonDiaryArray));
+            String prettyJsonString = gson.toJson(je);
+
+            Files.write(Paths.get(filename), prettyJsonString.getBytes());
+
         } catch (IOException e) {
             e.printStackTrace();
         }

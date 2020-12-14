@@ -30,6 +30,7 @@ public class LandoMicroservice  extends MicroService {
        subscribeEvent(DeactivationEvent.class,(duration)->{try {
                Thread.sleep(this.duration);
            } catch (InterruptedException e) {}
+           sendBroadcast(new TerminationBroadcast());
         });
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
