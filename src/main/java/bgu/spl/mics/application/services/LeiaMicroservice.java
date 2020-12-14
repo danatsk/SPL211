@@ -1,9 +1,11 @@
 package bgu.spl.mics.application.services;
 
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
 import bgu.spl.mics.MicroService;
+import bgu.spl.mics.application.messages.ActivationEvent;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminationBroadcast;
 import bgu.spl.mics.application.passiveObjects.*;
@@ -23,9 +25,13 @@ public class LeiaMicroservice extends MicroService {
         super("Leia");
         Ewoks.initialize(ewoks);
         this.attacks = attacks;
-//		initialize();
+		initialize();
     }
-
+    private void sendAttacks(){
+        for (Attack a:attacks) {
+            sendEvent(new AttackEvent(a.getSerials(),a.getDuration()));
+        }
+    }
     @Override
     protected void initialize() {
         Task init = new Task(name, "init", System.currentTimeMillis());
@@ -34,9 +40,8 @@ public class LeiaMicroservice extends MicroService {
         try {
             Thread.sleep(300);
         } catch (InterruptedException e) { }
-        for (Attack a:attacks) {
-            sendEvent(new AttackEvent(a.getSerials(),a.getDuration()));
-        }
+        subscribeEvent(ActivationEvent.class,(bool)->sendAttacks());
+        sendEvent(new ActivationEvent());
         subscribeBroadcast(TerminationBroadcast.class,(bool)->{terminate();});
     }
 }

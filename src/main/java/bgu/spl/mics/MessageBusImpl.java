@@ -36,8 +36,10 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		if(subscriptions.get(type)==null)
+		if(!subscriptions.containsKey(type))
 			subscriptions.put(type,new Vector<MicroService>());
+//		if(subscriptions.get(type)==null)
+//			subscriptions.put(type,new Vector<MicroService>());
 		subscriptions.get(type).add(m);
     }
 
@@ -71,7 +73,7 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public <T> Future<T> sendEvent(Event<T> e) {
+	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		MicroService m = roundRobin(e.getClass());
 		if(messagesQs.get(m)==null)
 			messagesQs.put(m,new Vector<Message>());
@@ -81,6 +83,7 @@ public class MessageBusImpl implements MessageBus {
 			messagesQs.get(m).add(e);
 			expectations.put(e,f);
 		}
+		notifyAll();
         return f;
 	}
 
@@ -100,9 +103,12 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	@Override
-	public Message awaitMessage(MicroService m) throws InterruptedException {
-		while(messagesQs.get(m).isEmpty())
+	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
+		if(messagesQs.get(m).isEmpty())
 			wait();
-		return messagesQs.get(m).remove(0);
+		Message output=messagesQs.get(m).firstElement();
+		messagesQs.get(m).remove(output);
+//		return messagesQs.get(m).remove(0);
+		return output;
 	}
 }

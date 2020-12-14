@@ -34,8 +34,8 @@ public class Ewoks {
     }
 
     public synchronized void acquire(List<Integer> serialNumbers){
-       for(int id = 1; id <= serialNumbers.size(); id++) {
-            while (!ewoks.elementAt(id).available) {
+       for(int id : serialNumbers) {
+            while (!ewoks.elementAt(id-1).available) {
                 try {
                     this.wait();
                 } catch (InterruptedException ignored) {
@@ -46,8 +46,8 @@ public class Ewoks {
     }
 
     public synchronized void realse(List<Integer> serialNumbers){
-        for (int id = 1; id <= serialNumbers.size(); id++) {
-            ewoks.elementAt(id).release();
+        for (int id :serialNumbers) {
+            ewoks.get(id-1).release();
             notifyAll();
         }
     }
