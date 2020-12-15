@@ -178,7 +178,10 @@ public abstract class MicroService implements Runnable {
         while(!Thread.currentThread().isInterrupted()){
             try {
                 Message m=mb.awaitMessage(this);
-                reactions.get(m.getClass()).call(m);
+                if(m!=null)
+                {
+                    reactions.get(m.getClass()).call(m);
+                }
             } catch (InterruptedException e) { Thread.currentThread().interrupt();}
         }
     }

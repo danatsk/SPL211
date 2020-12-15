@@ -48,13 +48,14 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public synchronized void sendBroadcast(Broadcast b) {
-		for (MicroService m:subscriptions.get(b.getClass())) {
-			messagesQs.get(m).add(b);
-		}
+		for (MicroService m : subscriptions.get(b.getClass())) {
+			if (m != null)
+				messagesQs.get(m).add(b);
+			}
 		notifyAll();
 	}
 
-	private MicroService roundRobin(Class<? extends Event> type){
+	private synchronized MicroService roundRobin(Class<? extends Event> type){
 	if(subscriptions.get(type)!=null) {
 		if(!subscriptions.get(type).isEmpty()) {
 			MicroService microService = subscriptions.get(type).get(0);
@@ -89,13 +90,14 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public void register(MicroService m) {
-		messagesQs.put(m, new Vector<Message>());
+		if(!messagesQs.containsKey(m))
+			messagesQs.put(m, new Vector<Message>());
 	}
 
 	@Override
 	public void unregister(MicroService m) {
 		messagesQs.remove(m);
-		for (Map.Entry<Class<? extends Message>,Vector<MicroService>>pair:subscriptions.entrySet()){
+		for (Map.Entry<Class<? extends Message>, Vector<MicroService>> pair : subscriptions.entrySet()) {
 			for (int i = 0; i < pair.getValue().size(); i++) {
 				pair.getValue().remove(m);
 			}
@@ -104,12 +106,14 @@ public class MessageBusImpl implements MessageBus {
 
 	@Override
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
-		while(messagesQs.get(m).isEmpty())
-			wait();
-
-		Message output=messagesQs.get(m).firstElement();
+		if(messagesQs.get(m)!=null) {
+			while (messagesQs.get(m).isEmpty())
+				wait();
+			Message output = messagesQs.get(m).firstElement();
 //		System.out.println("This m- "+m.getName()+" "+output);
-		messagesQs.get(m).remove(output);
-		return output;
+			messagesQs.get(m).remove(output);
+			return output;
+		}
+		return null;
 	}
 }
