@@ -130,7 +130,7 @@ public class Diary {
         }
         return 0;
     }
-
+    public void resetNumberAttacks(){this.totalAttacks.getAndSet(0);}
     public void writeOutput(String path) {
         JsonArray jsonDiaryArray = new JsonArray();
         jsonDiaryArray.add("Total attacks: " + getTotalAttacks());

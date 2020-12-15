@@ -35,7 +35,7 @@ public class R2D2Microservice extends MicroService {
             Thread.sleep(this.duration);
             Task deactivatedShield = new Task(name, "Deactivated", System.currentTimeMillis());
             diary.addTask(deactivatedShield);
-            System.out.println(System.currentTimeMillis());
+//            System.out.println(System.currentTimeMillis());
         } catch (InterruptedException e) {}
         sendEvent(new BombDestroyerEvent<>());
         });

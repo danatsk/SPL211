@@ -155,7 +155,7 @@ public abstract class MicroService implements Runnable {
      */
     protected synchronized final void terminate() {
     	terminate=true;
-        System.out.println("This m- "+getName()+" terminated");
+        mb.unregister(this);
         Task terminated = new Task(name,"Terminated", System.currentTimeMillis());
         diary.addTask(terminated);
     	Thread.currentThread().interrupt();

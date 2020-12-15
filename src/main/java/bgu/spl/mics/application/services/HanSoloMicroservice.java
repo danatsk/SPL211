@@ -36,7 +36,7 @@ public class HanSoloMicroservice extends MicroService {
         subscribeEvent(AttackEvent.class, (attack) ->
         {ewoks.acquire(attack.getSerials()); long duration = TimeUnit.MILLISECONDS.toMillis(attack.getDuration());
             try {
-                Task startedAttack = new Task(name, "Started", System.currentTimeMillis());
+                Task startedAttack = new Task(name, "Finished", System.currentTimeMillis());
                 diary.addTask(startedAttack);
                 Thread.sleep(duration);
             } catch (InterruptedException e) {};

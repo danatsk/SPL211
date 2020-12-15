@@ -55,15 +55,19 @@ public class MessageBusImpl implements MessageBus {
 	}
 
 	private MicroService roundRobin(Class<? extends Event> type){
-
-		MicroService microService = subscriptions.get(type).get(0);
-		subscriptions.get(type).remove(0);
-//		while (!isRegistered(microService)){
-//			microService = subscriptions.get(type).get(0);
-//			subscriptions.get(type).remove(0);
-//		}
-		subscriptions.get(type).add(microService);
-		return microService;
+	if(subscriptions.get(type)!=null) {
+		if(!subscriptions.get(type).isEmpty()) {
+			MicroService microService = subscriptions.get(type).get(0);
+			subscriptions.get(type).remove(0);
+			//		while (!isRegistered(microService)){
+			//			microService = subscriptions.get(type).get(0);
+			//			subscriptions.get(type).remove(0);
+			//		}
+			subscriptions.get(type).add(microService);
+			return microService;
+			}
+		}
+		return  null;
 	}
 
 	private boolean isRegistered(MicroService microService){
@@ -73,11 +77,14 @@ public class MessageBusImpl implements MessageBus {
 	@Override
 	public synchronized <T> Future<T> sendEvent(Event<T> e) {
 		MicroService m = roundRobin(e.getClass());
-		messagesQs.get(m).add(e);
-		Future<T> f = new Future<>();
-		expectations.put(e,f);
-		notifyAll();
-        return f;
+		if(m!=null) {
+			messagesQs.get(m).add(e);
+			Future<T> f = new Future<>();
+			expectations.put(e, f);
+			notifyAll();
+			return f;
+		}
+		return null;
 	}
 
 	@Override
@@ -101,7 +108,7 @@ public class MessageBusImpl implements MessageBus {
 			wait();
 
 		Message output=messagesQs.get(m).firstElement();
-		System.out.println("This m- "+m.getName()+" "+output);
+//		System.out.println("This m- "+m.getName()+" "+output);
 		messagesQs.get(m).remove(output);
 		return output;
 	}

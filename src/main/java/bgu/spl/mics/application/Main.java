@@ -19,7 +19,7 @@ import java.io.Reader;
 public class Main {
 	public static void main(String[] args) throws FileNotFoundException {
 		Gson gson = new Gson();
-		Reader reader = new FileReader(args[0]);
+		Reader reader = new FileReader("input.json");
 		JsonParse input =gson.fromJson(reader, JsonParse.class);
 //		MicroService Leia = new LeiaMicroservice(input.getAttacks());
 		Diary diary = Diary.getInstance();
@@ -30,26 +30,27 @@ public class Main {
 		Thread HanSoloThread=new Thread(new HanSoloMicroservice());
 		Thread C3POThread=new Thread(new C3POMicroservice());
 
-		LandoThread.start();
+
 		HanSoloThread.start();;
-		R2D2Thread.start();
 		C3POThread.start();
+		R2D2Thread.start();
+		LandoThread.start();
 		leiaThread.start();
 
 		try {
-			leiaThread.join();
 			LandoThread.join();
 			HanSoloThread.join();;
 			R2D2Thread.join();
 			C3POThread.join();
+			leiaThread.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 
 
 //		diary.writeOutput(args[1]);
-		diary.writeOutput("/home/spl211/Desktop/SPL211/SPL211/Output.json");
-
+//		diary.writeOutput("/home/spl211/Desktop/SPL211/SPL211/Output.json");
+		diary.writeOutput("Output.json");
 		System.out.println("finished");
 	}
 }
